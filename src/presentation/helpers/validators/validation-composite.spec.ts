@@ -1,5 +1,5 @@
 import { MissingParamError } from '../../errors'
-import type { Validation } from '../../protocols/validation'
+import type { Validation } from '../../protocols'
 import { ValidationComposite } from './validation-composite'
 
 const makeValidationStub = (): Validation => {
