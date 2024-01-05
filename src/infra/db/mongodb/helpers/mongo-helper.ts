@@ -1,4 +1,4 @@
-import { type Collection, MongoClient } from 'mongodb'
+import { type Collection, MongoClient, ObjectId } from 'mongodb'
 
 export const MongoHelper = {
   client: null as MongoClient | null,
@@ -24,5 +24,9 @@ export const MongoHelper = {
   map (collection: any): any {
     const { _id, ...collectionWithoutId } = collection
     return { id: _id, ...collectionWithoutId }
+  },
+
+  generateObjectId (id: string): ObjectId {
+    return new ObjectId(id)
   }
 }
