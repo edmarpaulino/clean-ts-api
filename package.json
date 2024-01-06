@@ -12,8 +12,7 @@
     "test:unit": "npm test -- --watch -c jest-unit-config.ts",
     "test:integration": "npm test -- --watch -c jest-integration-config.ts",
     "test:staged": "npm test -- --findRelatedTests",
-    "test:ci": "npm test -- --coverage",
-    "prepare": "husky install"
+    "test:ci": "npm test -- --coverage"
   },
   "keywords": [],
   "author": "",
