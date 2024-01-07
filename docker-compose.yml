@@ -15,7 +15,7 @@ services:
     working_dir: /usr/src/clean-node-api
     command: sh -c "npm install --only=prod && npm run debug" # takes more time than Dockerfile - run attached to analyze (without -d)
     volumes:
-      - ./dist:/usr/src/clean-node-api/dist
+      - ./dist/:/usr/src/clean-node-api/dist/
       - ./package.json:/usr/src/clean-node-api/package.json
     ports: 
       - "5050:5050"
