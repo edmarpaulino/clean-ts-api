@@ -1,0 +1,9 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
+import type { Router } from 'express'
+import { adaptRoute } from '../adapter/express/express-route-adapter'
+import { makeAddSurveyController } from '../factories/controllers/add-survey/add-survey-factory'
+
+export default (router: Router): void => {
+  router.post('/surveys', adaptRoute(makeAddSurveyController()))
+}
