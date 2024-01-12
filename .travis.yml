@@ -1,3 +1,8 @@
+# https://travis-ci.community/t/node-lib-x86-64-linux-gnu-libm-so-6-version-glibc-2-27-not-found-required-by-node/13655
+# For anyone else finding this, Node 18 (and beyond) is built against RHEL8.
+# The GLIB requirement isn’t backwards compatible.
+# You’ll need to target ubuntu 20, 22 and beyond to build successfully.
+dist: xenial
 language: node_js
 node_js:
   - 20
