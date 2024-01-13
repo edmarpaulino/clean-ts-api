@@ -1,7 +1,16 @@
-import type { AddSurvey, AddSurveyModel, HttpRequest, Validation } from './add-survey-controller-protocols'
-import { AddSurveyController } from './add-survey-controller'
-import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
+import {
+  badRequest,
+  noContent,
+  serverError
+} from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
+import { AddSurveyController } from './add-survey-controller'
+import type {
+  AddSurvey,
+  AddSurveyModel,
+  HttpRequest,
+  Validation
+} from './add-survey-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -17,7 +26,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: any): Error | null {
+    validate(input: any): Error | null {
       return null
     }
   }
@@ -26,7 +35,7 @@ const makeValidationStub = (): Validation => {
 
 const makeAddSurveyStub = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (survey: AddSurveyModel): Promise<void> {}
+    async add(survey: AddSurveyModel): Promise<void> {}
   }
   return new AddSurveyStub()
 }
@@ -86,7 +95,10 @@ describe('AddSurvey Controller', () => {
     const addSpy = jest.spyOn(addSurveyStub, 'add')
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith({ ...httpRequest.body, date: new Date() })
+    expect(addSpy).toHaveBeenCalledWith({
+      ...httpRequest.body,
+      date: new Date()
+    })
   })
 
   test('Should return 500 if AddSurvey throws', async () => {

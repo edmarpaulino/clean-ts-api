@@ -1,5 +1,5 @@
-import type { Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import type { Collection } from 'mongodb'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 
 describe('Survey Mongo Repository', () => {
@@ -38,7 +38,9 @@ describe('Survey Mongo Repository', () => {
         ],
         date: new Date()
       })
-      const survey = await surveyCollection.findOne({ question: 'any_question' })
+      const survey = await surveyCollection.findOne({
+        question: 'any_question'
+      })
       expect(survey).toBeTruthy()
     })
   })

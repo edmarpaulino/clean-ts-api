@@ -1,5 +1,5 @@
-import type { Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
+import type { Collection } from 'mongodb'
 import { AccountMongoRepository } from './account-mogo-repository'
 
 describe('Account Mongo Repository', () => {
@@ -68,11 +68,15 @@ describe('Account Mongo Repository', () => {
         email: 'any_email@mail.com',
         password: 'any_password'
       })
-      const accountBeforeUpdate = await accountCollection.findOne({ _id: insertedId })
+      const accountBeforeUpdate = await accountCollection.findOne({
+        _id: insertedId
+      })
       expect(accountBeforeUpdate?.accessToken).toBeFalsy()
       const sut = makeSut()
       await sut.updateAccessToken(insertedId.toString(), 'any_token')
-      const accountAfterUpdate = await accountCollection.findOne({ _id: insertedId })
+      const accountAfterUpdate = await accountCollection.findOne({
+        _id: insertedId
+      })
       expect(accountAfterUpdate).toBeTruthy()
       expect(accountAfterUpdate?.accessToken).toBe('any_token')
     })

@@ -1,7 +1,14 @@
-import { LoadSurveysController } from './load-surveys-controller'
-import type { LoadSurveys, SurveyModel } from './load-surveys-controller-protocols'
-import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import {
+  noContent,
+  ok,
+  serverError
+} from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
+import { LoadSurveysController } from './load-surveys-controller'
+import type {
+  LoadSurveys,
+  SurveyModel
+} from './load-surveys-controller-protocols'
 
 const makeFakeSurveys = (): SurveyModel[] => [
   {
@@ -30,7 +37,7 @@ const makeFakeSurveys = (): SurveyModel[] => [
 
 const makeLoadSurveysStub = (): LoadSurveys => {
   class LoadSurveysStub implements LoadSurveys {
-    async load (): Promise<SurveyModel[]> {
+    async load(): Promise<SurveyModel[]> {
       return await Promise.resolve(makeFakeSurveys())
     }
   }

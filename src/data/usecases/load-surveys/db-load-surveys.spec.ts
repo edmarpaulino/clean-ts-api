@@ -1,5 +1,8 @@
-import type { LoadSurveysRepository, SurveyModel } from './db-load-surveys-protocols'
 import { DbLoadSurveys } from './db-load-surveys'
+import type {
+  LoadSurveysRepository,
+  SurveyModel
+} from './db-load-surveys-protocols'
 
 const makeFakeSurveys = (): SurveyModel[] => [
   {
@@ -28,7 +31,7 @@ const makeFakeSurveys = (): SurveyModel[] => [
 
 const makeLoadSurveysRepositoryStub = (): LoadSurveysRepository => {
   class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
+    async loadAll(): Promise<SurveyModel[]> {
       return await Promise.resolve(makeFakeSurveys())
     }
   }
@@ -65,7 +68,9 @@ describe('DbLoadSurveys Usecase', () => {
 
   test('Should throw if LoadSurveysRepository throws', async () => {
     const { sut, loadSurveysRepositoryStub } = makeSut()
-    jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockRejectedValueOnce(new Error())
+    jest
+      .spyOn(loadSurveysRepositoryStub, 'loadAll')
+      .mockRejectedValueOnce(new Error())
     const promise = sut.load()
     await expect(promise).rejects.toThrow()
   })

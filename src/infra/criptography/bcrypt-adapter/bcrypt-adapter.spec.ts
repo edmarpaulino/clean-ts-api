@@ -2,10 +2,10 @@ import bcrypt from 'bcrypt'
 import { BcryptAdapter } from './bcrypt-adapter'
 
 jest.mock('bcrypt', () => ({
-  async hash (): Promise<string> {
+  async hash(): Promise<string> {
     return await Promise.resolve('hash')
   },
-  async compare (): Promise<boolean> {
+  async compare(): Promise<boolean> {
     return await Promise.resolve(true)
   }
 }))

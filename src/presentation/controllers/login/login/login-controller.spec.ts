@@ -1,7 +1,17 @@
 import { MissingParamError } from '@/presentation/errors'
-import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
-import type { Authentication, AuthenticationModel, HttpRequest, Validation } from './login-controller-protocols'
+import {
+  badRequest,
+  ok,
+  serverError,
+  unauthorized
+} from '@/presentation/helpers/http/http-helper'
 import { LoginController } from './login-controller'
+import type {
+  Authentication,
+  AuthenticationModel,
+  HttpRequest,
+  Validation
+} from './login-controller-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -12,7 +22,7 @@ const makeFakeRequest = (): HttpRequest => ({
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string | null> {
+    async auth(authentication: AuthenticationModel): Promise<string | null> {
       return await Promise.resolve('any_token')
     }
   }
@@ -21,7 +31,7 @@ const makeAuthenticationStub = (): Authentication => {
 
 const makeValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: any): null | Error {
+    validate(input: any): null | Error {
       return null
     }
   }
@@ -86,7 +96,9 @@ describe('Login Controller', () => {
 
   test('Should return 400 if Validation returns an error', async () => {
     const { sut, validationStub } = makeSut()
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
