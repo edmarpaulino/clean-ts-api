@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/main/server.js",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "build:watch": "rimraf dist && tsc -w",
     "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
     "up": "npm run build && docker-compose up -d",
@@ -14,7 +14,7 @@
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.ts",
     "test:integration": "npm test -- --watch -c jest-integration-config.ts",
-    "test:staged": "npm test -- --findRelatedTests",
+    "test:staged": "npm test -- --findRelatedTests .",
     "test:ci": "npm test -- --coverage",
     "test:coveralls": "npm run test:ci && coveralls < coverage/lcov.info"
   },
@@ -48,11 +48,16 @@
     "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongodb": "^6.3.0",
     "nodemon": "^3.0.2",
     "validator": "^13.11.0"
   },
   "engines": {
     "node": "20.x"
-  }
+  },
+  "_moduleAliases": {
+    "@": "dist"
+  },  
+  "_moduleDirectories": ["node_modules_custom"]
 }
