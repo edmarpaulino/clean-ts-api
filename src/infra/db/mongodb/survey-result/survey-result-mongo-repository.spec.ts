@@ -1,3 +1,4 @@
+import { mockAddAccountParams, mockAddSurveyParams } from '@/domain/test'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import MockDate from 'mockdate'
 import type { Collection } from 'mongodb'
@@ -32,24 +33,16 @@ describe('Survey Mongo Repository', () => {
   }
 
   const makeSurvey = async (): Promise<string> => {
-    const { insertedId } = await surveyCollection.insertOne({
-      question: 'any_question',
-      answers: [
-        {
-          image: 'any_image',
-          answer: 'any_answer'
-        }
-      ]
-    })
+    const { insertedId } = await surveyCollection.insertOne(
+      mockAddSurveyParams()
+    )
     return insertedId.toString()
   }
 
   const makeAccount = async (): Promise<string> => {
-    const { insertedId } = await accountCollection.insertOne({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'hashed_password'
-    })
+    const { insertedId } = await accountCollection.insertOne(
+      mockAddAccountParams()
+    )
     return insertedId.toString()
   }
 
