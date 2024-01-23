@@ -97,4 +97,47 @@ describe('Survey Mongo Repository', () => {
       expect(surveyResult.answers[1].percent).toBe(0)
     })
   })
+
+  describe('loadBySurveyId()', () => {
+    test('Should load survey result', async () => {
+      const sut = makeSut()
+      const survey = await makeSurvey()
+      const account = await makeAccount()
+      await surveyResultCollection.insertMany([
+        {
+          surveyId: MongoHelper.generateObjectId(survey.id),
+          accountId: MongoHelper.generateObjectId(account.id),
+          answer: survey.answers[0].answer,
+          date: new Date()
+        },
+        {
+          surveyId: MongoHelper.generateObjectId(survey.id),
+          accountId: MongoHelper.generateObjectId(account.id),
+          answer: survey.answers[0].answer,
+          date: new Date()
+        },
+        {
+          surveyId: MongoHelper.generateObjectId(survey.id),
+          accountId: MongoHelper.generateObjectId(account.id),
+          answer: survey.answers[0].answer,
+          date: new Date()
+        },
+        {
+          surveyId: MongoHelper.generateObjectId(survey.id),
+          accountId: MongoHelper.generateObjectId(account.id),
+          answer: survey.answers[1].answer,
+          date: new Date()
+        }
+      ])
+      const surveyResult = await sut.loadBySurveyId(survey.id.toString())
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult.surveyId.toString()).toBe(survey.id.toString())
+      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
+      expect(surveyResult.answers[0].count).toBe(3)
+      expect(surveyResult.answers[0].percent).toBe((100 / 4) * 3)
+      expect(surveyResult.answers[1].answer).toBe(survey.answers[1].answer)
+      expect(surveyResult.answers[1].count).toBe(1)
+      expect(surveyResult.answers[1].percent).toBe(100 / 4)
+    })
+  })
 })
