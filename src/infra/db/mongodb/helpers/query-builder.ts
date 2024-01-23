@@ -43,6 +43,13 @@ export class QueryBuilder {
     return this
   }
 
+  sort(data: object): this {
+    this.query.push({
+      $sort: data
+    })
+    return this
+  }
+
   build(): object[] {
     return this.query
   }
