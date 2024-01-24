@@ -1,4 +1,5 @@
 import type {
+  LoadSurveyResultRepository,
   SaveSurveyResult,
   SaveSurveyResultParams,
   SaveSurveyResultRepository,
@@ -7,14 +8,17 @@ import type {
 
 export class DbSaveSurveyResult implements SaveSurveyResult {
   constructor(
-    private readonly saveSurveyResultRepository: SaveSurveyResultRepository
+    private readonly saveSurveyResultRepository: SaveSurveyResultRepository,
+    private readonly loadSurveyResultRepository: LoadSurveyResultRepository
   ) {}
 
   async save(
     surveyResultData: SaveSurveyResultParams
   ): Promise<SurveyResultModel> {
-    const surveyResult =
-      await this.saveSurveyResultRepository.save(surveyResultData)
+    await this.saveSurveyResultRepository.save(surveyResultData)
+    const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(
+      surveyResultData.surveyId
+    )
     return surveyResult
   }
 }
