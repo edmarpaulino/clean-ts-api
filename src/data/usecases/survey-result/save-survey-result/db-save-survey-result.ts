@@ -19,6 +19,6 @@ export class DbSaveSurveyResult implements SaveSurveyResult {
     const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(
       surveyResultData.surveyId
     )
-    return surveyResult
+    return surveyResult as any
   }
 }
