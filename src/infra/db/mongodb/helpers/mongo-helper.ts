@@ -21,9 +21,9 @@ export const MongoHelper = {
     return this.client.db().collection(name)
   },
 
-  map(collection: any): any {
-    const { _id, ...collectionWithoutId } = collection
-    return { id: _id.toString(), ...collectionWithoutId }
+  map(data: any): any {
+    const { _id, ...rest } = data
+    return { id: _id.toString(), ...rest }
   },
 
   generateObjectId(id: string): ObjectId {

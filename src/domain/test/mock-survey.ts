@@ -1,53 +1,34 @@
 import type { SurveyModel } from '@/domain/models/survey'
 import type { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
+import { faker } from '@faker-js/faker'
 
 export const mockSurveyModel = (): SurveyModel => ({
-  id: 'any_id',
-  question: 'any_question',
+  id: faker.string.uuid(),
+  question: faker.word.words(),
   answers: [
     {
-      image: 'any_image',
-      answer: 'any_answer'
+      image: faker.image.url(),
+      answer: faker.word.sample()
     }
   ],
-  date: new Date()
+  date: faker.date.recent()
 })
 
 export const mockSurveyModelArray = (): SurveyModel[] => [
-  {
-    id: 'any_id',
-    question: 'any_question',
-    answers: [
-      {
-        image: 'any_image',
-        answer: 'any_answer'
-      }
-    ],
-    date: new Date()
-  },
-  {
-    id: 'other_id',
-    question: 'other_question',
-    answers: [
-      {
-        image: 'other_image',
-        answer: 'other_answer'
-      }
-    ],
-    date: new Date()
-  }
+  mockSurveyModel(),
+  mockSurveyModel()
 ]
 
 export const mockAddSurveyParams = (): AddSurveyParams => ({
-  question: 'any_question',
+  question: faker.word.words(),
   answers: [
     {
-      image: 'any_image',
-      answer: 'any_answer'
+      image: faker.image.url(),
+      answer: faker.word.sample()
     },
     {
-      answer: 'other_answer'
+      answer: faker.word.sample()
     }
   ],
-  date: new Date()
+  date: faker.date.recent()
 })

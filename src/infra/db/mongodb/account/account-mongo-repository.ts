@@ -13,10 +13,10 @@ export class AccountMongoRepository
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository
 {
-  async add(accountData: AddAccountParams): Promise<AccountModel> {
+  async add(data: AddAccountParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const { insertedId } = await accountCollection.insertOne(accountData)
-    const account = { _id: insertedId.toString(), ...accountData }
+    const { insertedId } = await accountCollection.insertOne(data)
+    const account = { _id: insertedId.toString(), ...data }
     return MongoHelper.map(account)
   }
 

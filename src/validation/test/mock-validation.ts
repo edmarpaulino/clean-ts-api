@@ -1,10 +1,17 @@
 import type { Validation } from '@/presentation/protocols'
 
-export const mockValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate(input: any): null | Error {
-      return null
-    }
+export class ValidationSpy implements Validation {
+  private readonly defaultError: null = null
+
+  public input: any
+  public error: null | Error = this.defaultError
+
+  validate(input: any): null | Error {
+    this.input = input
+    return this.error
   }
-  return new ValidationStub()
+
+  reset(): void {
+    this.error = this.defaultError
+  }
 }

@@ -5,27 +5,39 @@ import type { SurveyModel } from '@/domain/models/survey'
 import { mockSurveyModel, mockSurveyModelArray } from '@/domain/test'
 import type { AddSurveyParams } from '@/domain/usecases/survey/add-survey'
 
-export const mockAddSurveyRepository = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add(surveyData: AddSurveyParams): Promise<void> {}
+export class AddSurveyRepositorySpy implements AddSurveyRepository {
+  public addSurveyParams: AddSurveyParams
+
+  async add(data: AddSurveyParams): Promise<void> {
+    this.addSurveyParams = data
   }
-  return new AddSurveyRepositoryStub()
 }
 
-export const mockLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
-  class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-    async loadById(id: string): Promise<SurveyModel> {
-      return await Promise.resolve(mockSurveyModel())
-    }
+export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
+  public id: string
+  public surveyModel: SurveyModel = mockSurveyModel()
+
+  async loadById(id: string): Promise<SurveyModel> {
+    this.id = id
+    return await Promise.resolve(this.surveyModel)
   }
-  return new LoadSurveyByIdRepositoryStub()
 }
 
-export const mockLoadSurveysRepository = (): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll(): Promise<SurveyModel[]> {
-      return await Promise.resolve(mockSurveyModelArray())
-    }
+export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
+  private readonly defaultCallsCount: number = 0
+  private readonly defaultSurveyModelArray: SurveyModel[] =
+    mockSurveyModelArray()
+
+  public callsCount: number = this.defaultCallsCount
+  public surveyModelArray: SurveyModel[] = this.defaultSurveyModelArray
+
+  async loadAll(): Promise<SurveyModel[]> {
+    this.callsCount++
+    return await Promise.resolve(this.surveyModelArray)
   }
-  return new LoadSurveysRepositoryStub()
+
+  reset(): void {
+    this.callsCount = this.defaultCallsCount
+    this.surveyModelArray = this.defaultSurveyModelArray
+  }
 }

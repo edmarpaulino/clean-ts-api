@@ -6,7 +6,7 @@ import MockDate from 'mockdate'
 import type { Collection } from 'mongodb'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 
-describe('Survey Mongo Repository', () => {
+describe('SurveyMongoRepository', () => {
   let surveyCollection: Collection
   let surveyResultCollection: Collection
   let accountCollection: Collection

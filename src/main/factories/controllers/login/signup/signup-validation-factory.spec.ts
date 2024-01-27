@@ -1,5 +1,5 @@
+import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 import type { Validation } from '@/presentation/protocols'
-import { mockEmailValidator } from '@/validation/test'
 import {
   CompareFieldsValidation,
   EmailValidation,
@@ -20,7 +20,7 @@ describe('SignUpValidation Factory', () => {
     validations.push(
       new CompareFieldsValidation('password', 'passwordConfirmation')
     )
-    validations.push(new EmailValidation('email', mockEmailValidator()))
+    validations.push(new EmailValidation('email', new EmailValidatorAdapter()))
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 })

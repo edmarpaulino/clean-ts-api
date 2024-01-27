@@ -7,27 +7,52 @@ import type {
 import type { LoadSurveyById } from '@/domain/usecases/survey/load-survey-by-id'
 import type { LoadSurveys } from '@/domain/usecases/survey/load-surveys'
 
-export const mockAddSurvey = (): AddSurvey => {
-  class AddSurveyStub implements AddSurvey {
-    async add(survey: AddSurveyParams): Promise<void> {}
+export class AddSurveySpy implements AddSurvey {
+  private readonly defaultCallsCount: number = 0
+
+  public callsCount: number = this.defaultCallsCount
+  public addSurveyParams: AddSurveyParams
+
+  async add(data: AddSurveyParams): Promise<void> {
+    this.addSurveyParams = data
   }
-  return new AddSurveyStub()
+
+  reset(): void {
+    this.callsCount = this.defaultCallsCount
+  }
 }
 
-export const mockLoadSurveyById = (): LoadSurveyById => {
-  class LoadSurveyByIdStub implements LoadSurveyById {
-    async loadById(id: string): Promise<SurveyModel> {
-      return await Promise.resolve(mockSurveyModel())
-    }
+export class LoadSurveyByIdSpy implements LoadSurveyById {
+  private readonly defaultSurveyModel: SurveyModel = mockSurveyModel()
+
+  public id: string
+  public surveyModel: SurveyModel | null = this.defaultSurveyModel
+
+  async loadById(id: string): Promise<SurveyModel | null> {
+    this.id = id
+    return await Promise.resolve(this.surveyModel)
   }
-  return new LoadSurveyByIdStub()
+
+  reset(): void {
+    this.surveyModel = this.defaultSurveyModel
+  }
 }
 
-export const mockLoadSurveys = (): LoadSurveys => {
-  class LoadSurveysStub implements LoadSurveys {
-    async load(): Promise<SurveyModel[]> {
-      return await Promise.resolve(mockSurveyModelArray())
-    }
+export class LoadSurveysSpy implements LoadSurveys {
+  private readonly defaultCallsCount: number = 0
+  private readonly defaultSurveyModelArray: SurveyModel[] =
+    mockSurveyModelArray()
+
+  public callsCount: number = this.defaultCallsCount
+  public surveyModelArray: SurveyModel[] = this.defaultSurveyModelArray
+
+  async load(): Promise<SurveyModel[]> {
+    this.callsCount++
+    return await Promise.resolve(this.surveyModelArray)
   }
-  return new LoadSurveysStub()
+
+  reset(): void {
+    this.callsCount = this.defaultCallsCount
+    this.surveyModelArray = this.defaultSurveyModelArray
+  }
 }

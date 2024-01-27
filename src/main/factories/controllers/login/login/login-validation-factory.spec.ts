@@ -1,5 +1,5 @@
+import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 import type { Validation } from '@/presentation/protocols'
-import { mockEmailValidator } from '@/validation/test'
 import {
   EmailValidation,
   RequiredFieldValidation,
@@ -16,7 +16,7 @@ describe('LoginValidation Factory', () => {
     for (const field of ['email', 'password']) {
       validations.push(new RequiredFieldValidation(field))
     }
-    validations.push(new EmailValidation('email', mockEmailValidator()))
+    validations.push(new EmailValidation('email', new EmailValidatorAdapter()))
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 })

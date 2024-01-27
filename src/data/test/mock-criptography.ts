@@ -2,39 +2,58 @@ import type { Decrypter } from '@/data/protocols/criptography/decrypter'
 import type { Encrypter } from '@/data/protocols/criptography/encrypter'
 import type { HashComparer } from '@/data/protocols/criptography/hash-comparer'
 import type { Hasher } from '@/data/protocols/criptography/hasher'
+import { faker } from '@faker-js/faker'
 
-export const mockDecrypter = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt(value: string): Promise<string | null> {
-      return await Promise.resolve('any_value')
-    }
+export class DecrypterSpy implements Decrypter {
+  private readonly defaultPlaintext: string = faker.internet.password()
+
+  public ciphertext: string
+  public plaintext: string | null = this.defaultPlaintext
+
+  async decrypt(ciphertext: string): Promise<string | null> {
+    this.ciphertext = ciphertext
+    return await Promise.resolve(this.plaintext)
   }
-  return new DecrypterStub()
+
+  reset(): void {
+    this.plaintext = this.defaultPlaintext
+  }
 }
 
-export const mockEncrypter = (): Encrypter => {
-  class EncrypterStub implements Encrypter {
-    async encrypt(value: string): Promise<string> {
-      return await Promise.resolve('any_token')
-    }
+export class EncrypterSpy implements Encrypter {
+  public plaintext: string
+  public ciphertext: string = faker.string.uuid()
+
+  async encrypt(plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return await Promise.resolve(this.ciphertext)
   }
-  return new EncrypterStub()
 }
 
-export const mockHashComparer = (): HashComparer => {
-  class HashComparerStub implements HashComparer {
-    async compare(value: string, hash: string): Promise<boolean> {
-      return await Promise.resolve(true)
-    }
+export class HashComparerSpy implements HashComparer {
+  private readonly defaultIsValid: boolean = true
+
+  public plaintext: string
+  public digest: string
+  public isValid: boolean = this.defaultIsValid
+
+  async compare(plaintext: string, digest: string): Promise<boolean> {
+    this.plaintext = plaintext
+    this.digest = digest
+    return await Promise.resolve(this.isValid)
   }
-  return new HashComparerStub()
+
+  reset(): void {
+    this.isValid = this.defaultIsValid
+  }
 }
 
-export const mockHasher = (): Hasher => {
-  class HasherStub implements Hasher {
-    async hash(value: string): Promise<string> {
-      return await Promise.resolve('hashed_password')
-    }
+export class HasherSpy implements Hasher {
+  public plaintext: string
+  public digest: string = faker.string.uuid()
+
+  async hash(plaintext: string): Promise<string> {
+    this.plaintext = plaintext
+    return await Promise.resolve(this.digest)
   }
-  return new HasherStub()
 }
