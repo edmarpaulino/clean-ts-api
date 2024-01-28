@@ -4,3 +4,8 @@ export type AccountModel = {
   email: string
   password: string
 }
+
+export type AuthenticationModel = {
+  accessToken: string
+  name: string
+}
