@@ -1,4 +1,5 @@
 import { DecrypterSpy, LoadAccountByTokenRepositorySpy } from '@/data/test'
+import { throwError } from '@/domain/test'
 import { faker } from '@faker-js/faker'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 
@@ -43,6 +44,13 @@ describe('DbLoadAccountByToken Usecase', () => {
   test('Should return null if Decrypter returns null', async () => {
     const { sut, decrypterSpy } = makeSut()
     decrypterSpy.plaintext = null
+    const account = await sut.load(token, role)
+    expect(account).toBeNull()
+  })
+
+  test('Should return null if Decrypter throws', async () => {
+    const { sut, decrypterSpy } = makeSut()
+    jest.spyOn(decrypterSpy, 'decrypt').mockImplementationOnce(throwError)
     const account = await sut.load(token, role)
     expect(account).toBeNull()
   })
