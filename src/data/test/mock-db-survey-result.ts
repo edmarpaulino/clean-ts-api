@@ -21,11 +21,16 @@ export class LoadSurveyResultRepositorySpy
     mockSurveyResultModel()
 
   public surveyId: string
+  public accountId: string
   public surveyResultModel: SurveyResultModel | null =
     this.defaultSurveyResultModel
 
-  async loadBySurveyId(surveyId: string): Promise<SurveyResultModel | null> {
+  async loadBySurveyId(
+    surveyId: string,
+    accountId: string
+  ): Promise<SurveyResultModel | null> {
     this.surveyId = surveyId
+    this.accountId = accountId
     return await Promise.resolve(this.surveyResultModel)
   }
 

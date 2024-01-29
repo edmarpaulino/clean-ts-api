@@ -13,7 +13,7 @@ export const surveyResultAnswerSchema = {
     percent: {
       type: 'number'
     },
-    didAnswer: {
+    isCurrentAccountAnswer: {
       type: 'boolean'
     }
   },

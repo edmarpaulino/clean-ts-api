@@ -65,6 +65,9 @@ describe('DbSaveSurveyResult UseCase', () => {
     expect(loadSurveyResultRepositorySpy.surveyId).toBe(
       surveyResultData.surveyId
     )
+    expect(loadSurveyResultRepositorySpy.accountId).toBe(
+      surveyResultData.accountId
+    )
   })
 
   test('Should throw if LoadSurveyResultRepository throws', async () => {

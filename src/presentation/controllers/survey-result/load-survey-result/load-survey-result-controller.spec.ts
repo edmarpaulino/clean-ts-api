@@ -12,7 +12,8 @@ import type { HttpRequest } from './load-survey-result-controller-protocols'
 const mockHttpRequest = (): HttpRequest => ({
   params: {
     surveyId: faker.string.uuid()
-  }
+  },
+  accountId: faker.string.uuid()
 })
 
 type SutTypes = {
@@ -62,11 +63,12 @@ describe('LoadSurveyResultController', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  test('Should call LoadSurveyResult with correct value', async () => {
+  test('Should call LoadSurveyResult with correct values', async () => {
     const { sut, loadSurveyResultSpy } = makeSut()
     const httpRequest = mockHttpRequest()
     await sut.handle(httpRequest)
     expect(loadSurveyResultSpy.surveyId).toBe(httpRequest.params?.surveyId)
+    expect(loadSurveyResultSpy.accountId).toBe(httpRequest.accountId)
   })
 
   test('Should return 500 if LoadSurveyResult throws', async () => {
