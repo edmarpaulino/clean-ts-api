@@ -1,13 +1,12 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/tests'],
   clearMocks: true,
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/**/*.d.ts',
-    '!<rootDir>/src/main/**',
-    '!**/test/**'
+    '!<rootDir>/src/main/**'
   ],
   coverageDirectory: 'coverage',
   transform: {
@@ -15,6 +14,7 @@ const config: Config = {
   },
   preset: '@shelf/jest-mongodb',
   moduleNameMapper: {
+    '@/tests/(.*)': '<rootDir>/tests/$1',
     '@/(.*)': '<rootDir>/src/$1'
   }
 }
