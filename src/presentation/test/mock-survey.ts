@@ -39,20 +39,18 @@ export class LoadSurveyByIdSpy implements LoadSurveyById {
 }
 
 export class LoadSurveysSpy implements LoadSurveys {
-  private readonly defaultCallsCount: number = 0
   private readonly defaultSurveyModelArray: SurveyModel[] =
     mockSurveyModelArray()
 
-  public callsCount: number = this.defaultCallsCount
+  public accountId: string
   public surveyModelArray: SurveyModel[] = this.defaultSurveyModelArray
 
-  async load(): Promise<SurveyModel[]> {
-    this.callsCount++
+  async load(accountId: string): Promise<SurveyModel[]> {
+    this.accountId = accountId
     return await Promise.resolve(this.surveyModelArray)
   }
 
   reset(): void {
-    this.callsCount = this.defaultCallsCount
     this.surveyModelArray = this.defaultSurveyModelArray
   }
 }

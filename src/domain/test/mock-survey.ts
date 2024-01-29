@@ -11,7 +11,8 @@ export const mockSurveyModel = (): SurveyModel => ({
       answer: faker.word.sample()
     }
   ],
-  date: faker.date.recent()
+  date: faker.date.recent(),
+  didAnswer: true
 })
 
 export const mockSurveyModelArray = (): SurveyModel[] => [
