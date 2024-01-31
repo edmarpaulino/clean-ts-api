@@ -62,7 +62,7 @@ describe('DbAuthentication Usecase', () => {
 
   test('Should return null if LoadAccountByEmailRepository returns null', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut()
-    loadAccountByEmailRepositorySpy.accountModel = null
+    loadAccountByEmailRepositorySpy.result = null
     const authenticationModel = await sut.auth(mockAuthenticationParams())
     expect(authenticationModel).toBeNull()
   })
@@ -73,7 +73,7 @@ describe('DbAuthentication Usecase', () => {
     await sut.auth(authenticationData)
     expect(hashComparerSpy.plaintext).toBe(authenticationData.password)
     expect(hashComparerSpy.digest).toBe(
-      loadAccountByEmailRepositorySpy.accountModel?.password
+      loadAccountByEmailRepositorySpy.result?.password
     )
   })
 
@@ -95,7 +95,7 @@ describe('DbAuthentication Usecase', () => {
     const { sut, encrypterSpy, loadAccountByEmailRepositorySpy } = makeSut()
     await sut.auth(mockAuthenticationParams())
     expect(encrypterSpy.plaintext).toBe(
-      loadAccountByEmailRepositorySpy.accountModel?.id
+      loadAccountByEmailRepositorySpy.result?.id
     )
   })
 
@@ -111,7 +111,7 @@ describe('DbAuthentication Usecase', () => {
     const authenticationModel = await sut.auth(mockAuthenticationParams())
     expect(authenticationModel?.accessToken).toBe(encrypterSpy.ciphertext)
     expect(authenticationModel?.name).toBe(
-      loadAccountByEmailRepositorySpy.accountModel?.name
+      loadAccountByEmailRepositorySpy.result?.name
     )
   })
 
@@ -124,7 +124,7 @@ describe('DbAuthentication Usecase', () => {
     } = makeSut()
     await sut.auth(mockAuthenticationParams())
     expect(updateAccessTokenRepositorySpy.id).toBe(
-      loadAccountByEmailRepositorySpy.accountModel?.id
+      loadAccountByEmailRepositorySpy.result?.id
     )
     expect(updateAccessTokenRepositorySpy.token).toBe(encrypterSpy.ciphertext)
   })

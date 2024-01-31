@@ -4,58 +4,62 @@ import type {
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository
 } from '@/data/protocols'
-import type { AccountModel } from '@/domain/models'
-import type { AddAccountParams } from '@/domain/usecases'
 import { mockAccountModel } from '@/tests/domain/mocks'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
-  public addAccountParams: AddAccountParams
-  public accountModel: AccountModel = mockAccountModel()
+  public params: AddAccountRepository.Params
+  public result: AddAccountRepository.Result = mockAccountModel()
 
-  async add(data: AddAccountParams): Promise<AccountModel> {
-    this.addAccountParams = data
-    return await Promise.resolve(this.accountModel)
+  async add(
+    params: AddAccountRepository.Params
+  ): Promise<AddAccountRepository.Result> {
+    this.params = params
+    return await Promise.resolve(this.result)
   }
 }
 
 export class LoadAccountByEmailRepositorySpy
   implements LoadAccountByEmailRepository
 {
-  private readonly defaultAccountModel: AccountModel = mockAccountModel()
+  private readonly defaultResult: LoadAccountByEmailRepository.Result =
+    mockAccountModel()
 
   public email: string
-  public accountModel: AccountModel | null = this.defaultAccountModel
+  public result: LoadAccountByEmailRepository.Result = this.defaultResult
 
-  async loadByEmail(email: string): Promise<AccountModel | null> {
+  async loadByEmail(
+    email: string
+  ): Promise<LoadAccountByEmailRepository.Result> {
     this.email = email
-    return await Promise.resolve(this.accountModel)
+    return await Promise.resolve(this.result)
   }
 
   reset(): void {
-    this.accountModel = this.defaultAccountModel
+    this.result = this.defaultResult
   }
 }
 
 export class LoadAccountByTokenRepositorySpy
   implements LoadAccountByTokenRepository
 {
-  private readonly defaultAccounModel: AccountModel = mockAccountModel()
+  private readonly defaultResult: LoadAccountByTokenRepository.Result =
+    mockAccountModel()
 
   public token: string
   public role?: string
-  public accountModel: AccountModel | null = this.defaultAccounModel
+  public result: LoadAccountByTokenRepository.Result = this.defaultResult
 
   async loadByToken(
     token: string,
     role?: string
-  ): Promise<AccountModel | null> {
+  ): Promise<LoadAccountByTokenRepository.Result> {
     this.token = token
     this.role = role
-    return await Promise.resolve(this.accountModel)
+    return await Promise.resolve(this.result)
   }
 
   reset(): void {
-    this.accountModel = this.defaultAccounModel
+    this.result = this.defaultResult
   }
 }
 

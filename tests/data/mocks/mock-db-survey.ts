@@ -3,41 +3,39 @@ import type {
   LoadSurveyByIdRepository,
   LoadSurveysRepository
 } from '@/data/protocols'
-import type { SurveyModel } from '@/domain/models'
-import type { AddSurveyParams } from '@/domain/usecases'
 import { mockSurveyModel, mockSurveyModelArray } from '@/tests/domain/mocks'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
-  public addSurveyParams: AddSurveyParams
+  public params: AddSurveyRepository.Params
 
-  async add(data: AddSurveyParams): Promise<void> {
-    this.addSurveyParams = data
+  async add(params: AddSurveyRepository.Params): Promise<void> {
+    this.params = params
   }
 }
 
 export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
   public id: string
-  public surveyModel: SurveyModel = mockSurveyModel()
+  public result: LoadSurveyByIdRepository.Result = mockSurveyModel()
 
-  async loadById(id: string): Promise<SurveyModel> {
+  async loadById(id: string): Promise<LoadSurveyByIdRepository.Result> {
     this.id = id
-    return await Promise.resolve(this.surveyModel)
+    return await Promise.resolve(this.result)
   }
 }
 
 export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
-  private readonly defaultSurveyModelArray: SurveyModel[] =
+  private readonly defaultResult: LoadSurveysRepository.Result =
     mockSurveyModelArray()
 
   public accountId: string
-  public surveyModelArray: SurveyModel[] = this.defaultSurveyModelArray
+  public result: LoadSurveysRepository.Result = this.defaultResult
 
-  async loadAll(accountId: string): Promise<SurveyModel[]> {
+  async loadAll(accountId: string): Promise<LoadSurveysRepository.Result> {
     this.accountId = accountId
-    return await Promise.resolve(this.surveyModelArray)
+    return await Promise.resolve(this.result)
   }
 
   reset(): void {
-    this.surveyModelArray = this.defaultSurveyModelArray
+    this.result = this.defaultResult
   }
 }

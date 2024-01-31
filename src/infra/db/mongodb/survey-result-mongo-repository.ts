@@ -3,13 +3,12 @@ import type {
   SaveSurveyResultRepository
 } from '@/data/protocols'
 import type { SurveyResultModel } from '@/domain/models'
-import type { SaveSurveyResultParams } from '@/domain/usecases'
 import { MongoHelper, QueryBuilder } from '@/infra/db'
 
 export class SurveyResultMongoRepository
   implements SaveSurveyResultRepository, LoadSurveyResultRepository
 {
-  async save(data: SaveSurveyResultParams): Promise<void> {
+  async save(data: SaveSurveyResultRepository.Params): Promise<void> {
     const surveyResultCollection =
       await MongoHelper.getCollection('surveyResults')
     await surveyResultCollection.findOneAndUpdate(
@@ -32,7 +31,7 @@ export class SurveyResultMongoRepository
   async loadBySurveyId(
     surveyId: string,
     accountId: string
-  ): Promise<SurveyResultModel | null> {
+  ): Promise<LoadSurveyResultRepository.Result> {
     const surveyResultCollection =
       await MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()

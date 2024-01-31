@@ -1,14 +1,11 @@
 import { AccessDeniedError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helpers'
 import { AuthMiddleware } from '@/presentation/middlewares'
-import type { HttpRequest } from '@/presentation/protocols'
 import { LoadAccountByTokenSpy } from '@/tests/presentation/mocks'
 import { faker } from '@faker-js/faker'
 
-const mockHttpRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': faker.string.uuid()
-  }
+const mockRequest = (): AuthMiddleware.Request => ({
+  accessToken: faker.string.uuid()
 })
 
 type SutTypes = {
@@ -40,33 +37,31 @@ describe('Auth Middleware', () => {
   test('Should call LoadAccountByToken with correct values', async () => {
     const role = faker.word.adjective()
     const { sut, loadAccountByTokenSpy } = makeSut(role)
-    const httpRequest = mockHttpRequest()
-    await sut.handle(httpRequest)
-    expect(loadAccountByTokenSpy.accessToken).toBe(
-      httpRequest.headers['x-access-token']
-    )
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(loadAccountByTokenSpy.accessToken).toBe(request.accessToken)
     expect(loadAccountByTokenSpy.role).toBe(role)
   })
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
-    loadAccountByTokenSpy.accountModel = null
-    const httpResponse = await sut.handle(mockHttpRequest())
+    loadAccountByTokenSpy.result = null
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 
   test('Should return 200 if LoadAccountByToken returns an account', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
-    const httpResponse = await sut.handle(mockHttpRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(
-      ok({ accountId: loadAccountByTokenSpy.accountModel?.id })
+      ok({ accountId: loadAccountByTokenSpy.result?.id })
     )
   })
 
   test('Should return 500 if LoadAccountByToken thows', async () => {
     const { sut, loadAccountByTokenSpy } = makeSut()
     jest.spyOn(loadAccountByTokenSpy, 'load').mockRejectedValueOnce(new Error())
-    const httpResponse = await sut.handle(mockHttpRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

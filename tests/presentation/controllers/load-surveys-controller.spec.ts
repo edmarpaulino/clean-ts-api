@@ -1,11 +1,10 @@
 import { LoadSurveysController } from '@/presentation/controllers'
 import { noContent, ok, serverError } from '@/presentation/helpers'
-import type { HttpRequest } from '@/presentation/protocols'
 import { LoadSurveysSpy } from '@/tests/presentation/mocks'
 import { faker } from '@faker-js/faker'
 import MockDate from 'mockdate'
 
-const mockHttpRequest = (): HttpRequest => ({
+const mockHttpRequest = (): LoadSurveysController.Request => ({
   accountId: faker.string.uuid()
 })
 
@@ -39,20 +38,20 @@ describe('LoadSurveys Controller', () => {
 
   test('Should call LoadSurveys with correct value', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    const httpRequest = mockHttpRequest()
-    await sut.handle(httpRequest)
-    expect(loadSurveysSpy.accountId).toBe(httpRequest.accountId)
+    const request = mockHttpRequest()
+    await sut.handle(request)
+    expect(loadSurveysSpy.accountId).toBe(request.accountId)
   })
 
   test('Should return 200 on success', async () => {
     const { sut, loadSurveysSpy } = makeSut()
     const httpResponse = await sut.handle(mockHttpRequest())
-    expect(httpResponse).toEqual(ok(loadSurveysSpy.surveyModelArray))
+    expect(httpResponse).toEqual(ok(loadSurveysSpy.result))
   })
 
   test('Should return 204 if LoadSurveys returns empty', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    loadSurveysSpy.surveyModelArray = []
+    loadSurveysSpy.result = []
     const httpResponse = await sut.handle(mockHttpRequest())
     expect(httpResponse).toEqual(noContent())
   })

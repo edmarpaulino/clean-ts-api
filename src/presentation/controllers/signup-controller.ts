@@ -3,10 +3,18 @@ import { EmailInUseError } from '@/presentation/errors'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers'
 import type {
   Controller,
-  HttpRequest,
   HttpResponse,
   Validation
 } from '@/presentation/protocols'
+
+export namespace SignUpController {
+  export type Request = {
+    name: string
+    email: string
+    password: string
+    passwordConfirmation: string
+  }
+}
 
 export class SignUpController implements Controller {
   constructor(
@@ -15,13 +23,15 @@ export class SignUpController implements Controller {
     private readonly authentication: Authentication
   ) {}
 
-  public handle = async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+  public handle = async (
+    request: SignUpController.Request
+  ): Promise<HttpResponse> => {
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
-      const { name, email, password } = httpRequest.body
+      const { name, email, password } = request
       const account = await this.addAccount.add({ name, email, password })
       if (!account) {
         return forbidden(new EmailInUseError())

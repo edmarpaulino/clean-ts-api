@@ -1,15 +1,11 @@
 import { LogControllerDecorator } from '@/main/decorators'
 import { ok, serverError } from '@/presentation/helpers'
-import type {
-  Controller,
-  HttpRequest,
-  HttpResponse
-} from '@/presentation/protocols'
+import type { Controller, HttpResponse } from '@/presentation/protocols'
 import { LogErrorRepositorySpy } from '@/tests/data/mocks'
 import { mockAccountModel } from '@/tests/domain/mocks'
 import { faker } from '@faker-js/faker'
 
-const mockHttpRequest = (): HttpRequest => {
+const mockRequest = (): any => {
   const password: string = faker.internet.password()
   return {
     body: {
@@ -28,11 +24,11 @@ const mockServerError = (): HttpResponse => {
 }
 
 class ControllerSpy implements Controller {
-  public httpRequest: HttpRequest
+  public request: any
   public httpResponse: HttpResponse = ok(mockAccountModel())
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    this.httpRequest = httpRequest
+  async handle(request: any): Promise<HttpResponse> {
+    this.request = request
     return await Promise.resolve(this.httpResponse)
   }
 }
@@ -57,14 +53,14 @@ const makeSut = (): SutTypes => {
 describe('LogController Decorator', () => {
   test('Should call controller handle', async () => {
     const { sut, controllerSpy } = makeSut()
-    const httpRequest = mockHttpRequest()
+    const httpRequest = mockRequest()
     await sut.handle(httpRequest)
-    expect(controllerSpy.httpRequest).toEqual(httpRequest)
+    expect(controllerSpy.request).toEqual(httpRequest)
   })
 
   test('Should return the same result of the controller', async () => {
     const { sut, controllerSpy } = makeSut()
-    const httpResponse = await sut.handle(mockHttpRequest())
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(controllerSpy.httpResponse)
   })
 
@@ -72,7 +68,7 @@ describe('LogController Decorator', () => {
     const { sut, controllerSpy, logErrorRepositorySpy } = makeSut()
     const serverError = mockServerError()
     controllerSpy.httpResponse = serverError
-    await sut.handle(mockHttpRequest())
+    await sut.handle(mockRequest())
     expect(logErrorRepositorySpy.stack).toBe(serverError.body.stack)
   })
 })

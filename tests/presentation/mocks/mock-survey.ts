@@ -1,20 +1,14 @@
-import type { SurveyModel } from '@/domain/models'
-import type {
-  AddSurvey,
-  AddSurveyParams,
-  LoadSurveyById,
-  LoadSurveys
-} from '@/domain/usecases'
+import type { AddSurvey, LoadSurveyById, LoadSurveys } from '@/domain/usecases'
 import { mockSurveyModel, mockSurveyModelArray } from '@/tests/domain/mocks'
 
 export class AddSurveySpy implements AddSurvey {
   private readonly defaultCallsCount: number = 0
 
   public callsCount: number = this.defaultCallsCount
-  public addSurveyParams: AddSurveyParams
+  public params: AddSurvey.Params
 
-  async add(data: AddSurveyParams): Promise<void> {
-    this.addSurveyParams = data
+  async add(params: AddSurvey.Params): Promise<void> {
+    this.params = params
   }
 
   reset(): void {
@@ -23,34 +17,33 @@ export class AddSurveySpy implements AddSurvey {
 }
 
 export class LoadSurveyByIdSpy implements LoadSurveyById {
-  private readonly defaultSurveyModel: SurveyModel = mockSurveyModel()
+  private readonly defaultResult: LoadSurveyById.Result = mockSurveyModel()
 
   public id: string
-  public surveyModel: SurveyModel | null = this.defaultSurveyModel
+  public result: LoadSurveyById.Result = this.defaultResult
 
-  async loadById(id: string): Promise<SurveyModel | null> {
+  async loadById(id: string): Promise<LoadSurveyById.Result> {
     this.id = id
-    return await Promise.resolve(this.surveyModel)
+    return await Promise.resolve(this.result)
   }
 
   reset(): void {
-    this.surveyModel = this.defaultSurveyModel
+    this.result = this.defaultResult
   }
 }
 
 export class LoadSurveysSpy implements LoadSurveys {
-  private readonly defaultSurveyModelArray: SurveyModel[] =
-    mockSurveyModelArray()
+  private readonly defaultResult: LoadSurveys.Result = mockSurveyModelArray()
 
   public accountId: string
-  public surveyModelArray: SurveyModel[] = this.defaultSurveyModelArray
+  public result: LoadSurveys.Result = this.defaultResult
 
-  async load(accountId: string): Promise<SurveyModel[]> {
+  async load(accountId: string): Promise<LoadSurveys.Result> {
     this.accountId = accountId
-    return await Promise.resolve(this.surveyModelArray)
+    return await Promise.resolve(this.result)
   }
 
   reset(): void {
-    this.surveyModelArray = this.defaultSurveyModelArray
+    this.result = this.defaultResult
   }
 }

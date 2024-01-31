@@ -17,7 +17,7 @@ const makeSut = (): SutTypes => {
   const hasherSpy = new HasherSpy()
   const addAccountRepositorySpy = new AddAccountRepositorySpy()
   const loadAccountByEmailRepositorySpy = new LoadAccountByEmailRepositorySpy()
-  loadAccountByEmailRepositorySpy.accountModel = null
+  loadAccountByEmailRepositorySpy.result = null
   const sut = new DbAddAccount(
     hasherSpy,
     addAccountRepositorySpy,
@@ -55,7 +55,7 @@ describe('DbAddAccount Usecase', () => {
     const { sut, addAccountRepositorySpy, hasherSpy } = makeSut()
     const addAccountParams = mockAddAccountParams()
     await sut.add(addAccountParams)
-    expect(addAccountRepositorySpy.addAccountParams).toEqual({
+    expect(addAccountRepositorySpy.params).toEqual({
       name: addAccountParams.name,
       email: addAccountParams.email,
       password: hasherSpy.digest
@@ -80,7 +80,7 @@ describe('DbAddAccount Usecase', () => {
 
   test('Should return null if LoadAccountByEmailRepository not returns null', async () => {
     const { sut, loadAccountByEmailRepositorySpy } = makeSut()
-    loadAccountByEmailRepositorySpy.accountModel = mockAccountModel()
+    loadAccountByEmailRepositorySpy.result = mockAccountModel()
     const account = await sut.add(mockAddAccountParams())
     expect(account).toBeNull()
   })
@@ -88,6 +88,6 @@ describe('DbAddAccount Usecase', () => {
   test('Should return an account on success', async () => {
     const { sut, addAccountRepositorySpy } = makeSut()
     const account = await sut.add(mockAddAccountParams())
-    expect(account).toEqual(addAccountRepositorySpy.accountModel)
+    expect(account).toEqual(addAccountRepositorySpy.result)
   })
 })
