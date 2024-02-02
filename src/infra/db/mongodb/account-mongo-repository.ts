@@ -1,5 +1,6 @@
 import type {
   AddAccountRepository,
+  CheckAccountByEmailRepository,
   LoadAccountByEmailRepository,
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository
@@ -10,6 +11,7 @@ export class AccountMongoRepository
   implements
     AddAccountRepository,
     LoadAccountByEmailRepository,
+    CheckAccountByEmailRepository,
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository
 {
@@ -27,6 +29,17 @@ export class AccountMongoRepository
     const accountCollection = await MongoHelper.getCollection('accounts')
     const account = await accountCollection.findOne({ email })
     return account && MongoHelper.map(account)
+  }
+
+  async checkByEmail(
+    email: string
+  ): Promise<CheckAccountByEmailRepository.Result> {
+    const accountCollection = await MongoHelper.getCollection('accounts')
+    const accountCount = await accountCollection.countDocuments(
+      { email },
+      { limit: 1 }
+    )
+    return accountCount !== 0
   }
 
   async updateAccessToken(id: string, token: string): Promise<void> {

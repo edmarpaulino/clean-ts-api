@@ -1,5 +1,6 @@
 import type {
   AddAccountRepository,
+  CheckAccountByEmailRepository,
   LoadAccountByEmailRepository,
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository
@@ -36,6 +37,26 @@ export class LoadAccountByEmailRepositorySpy
   async loadByEmail(
     email: string
   ): Promise<LoadAccountByEmailRepository.Result> {
+    this.email = email
+    return await Promise.resolve(this.result)
+  }
+
+  reset(): void {
+    this.result = this.defaultResult
+  }
+}
+
+export class CheckAccountByEmailRepositorySpy
+  implements CheckAccountByEmailRepository
+{
+  private readonly defaultResult: CheckAccountByEmailRepository.Result = true
+
+  public email: string
+  public result: CheckAccountByEmailRepository.Result = this.defaultResult
+
+  async checkByEmail(
+    email: string
+  ): Promise<CheckAccountByEmailRepository.Result> {
     this.email = email
     return await Promise.resolve(this.result)
   }
