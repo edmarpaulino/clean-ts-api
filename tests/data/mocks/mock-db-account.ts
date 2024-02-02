@@ -7,14 +7,20 @@ import type {
 import { mockAccountModel } from '@/tests/domain/mocks'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
+  private readonly defaultResult: boolean = true
+
   public params: AddAccountRepository.Params
-  public result: AddAccountRepository.Result = mockAccountModel()
+  public result: AddAccountRepository.Result = this.defaultResult
 
   async add(
     params: AddAccountRepository.Params
   ): Promise<AddAccountRepository.Result> {
     this.params = params
     return await Promise.resolve(this.result)
+  }
+
+  reset(): void {
+    this.result = this.defaultResult
   }
 }
 

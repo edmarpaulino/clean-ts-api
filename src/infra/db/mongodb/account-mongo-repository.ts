@@ -18,8 +18,7 @@ export class AccountMongoRepository
   ): Promise<AddAccountRepository.Result> {
     const accountCollection = await MongoHelper.getCollection('accounts')
     const { insertedId } = await accountCollection.insertOne(data)
-    const account = { _id: insertedId.toString(), ...data }
-    return MongoHelper.map(account)
+    return insertedId !== null
   }
 
   async loadByEmail(

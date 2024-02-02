@@ -6,7 +6,7 @@ import type {
 import { mockAccountModel, mockAuthenticationModel } from '@/tests/domain/mocks'
 
 export class AddAccountSpy implements AddAccount {
-  private readonly defaultResult: AddAccount.Result = mockAccountModel()
+  private readonly defaultResult: AddAccount.Result = true
 
   public params: AddAccount.Params
   public result: AddAccount.Result = this.defaultResult

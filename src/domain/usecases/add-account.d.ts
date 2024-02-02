@@ -1,5 +1,3 @@
-import type { AccountModel } from '@/domain/models'
-
 export namespace AddAccount {
   export type Params = {
     name: string
@@ -7,7 +5,7 @@ export namespace AddAccount {
     password: string
   }
 
-  export type Result = AccountModel | null
+  export type Result = boolean
 }
 
 export interface AddAccount {
