@@ -1,6 +1,7 @@
 import type {
   AddSurveyRepository,
   CheckSurveyByIdRepository,
+  LoadAnswersBySurveyRepository,
   LoadSurveyByIdRepository,
   LoadSurveysRepository
 } from '@/data/protocols'
@@ -11,7 +12,8 @@ export class SurveyMongoRepository
     AddSurveyRepository,
     LoadSurveysRepository,
     LoadSurveyByIdRepository,
-    CheckSurveyByIdRepository
+    CheckSurveyByIdRepository,
+    LoadAnswersBySurveyRepository
 {
   async add(data: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
@@ -72,5 +74,20 @@ export class SurveyMongoRepository
       { limit: 1 }
     )
     return surveyCount !== 0
+  }
+
+  async loadAnswers(id: string): Promise<LoadAnswersBySurveyRepository.Result> {
+    const surveyCollection = await MongoHelper.getCollection('surveys')
+    const query = new QueryBuilder()
+      .match({
+        _id: MongoHelper.generateObjectId(id)
+      })
+      .project({
+        _id: 0,
+        answers: '$answers.answer'
+      })
+      .build()
+    const survey = await surveyCollection.aggregate(query).toArray()
+    return survey?.[0]?.answers || []
   }
 }

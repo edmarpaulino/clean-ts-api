@@ -91,6 +91,14 @@ describe('SurveyMongoRepository', () => {
       expect(survey?.id).toBeTruthy()
       expect(survey?.question).toBe(addSurveyParams.question)
     })
+
+    test('Should return null if survey does not exits', async () => {
+      const sut = makeSut()
+      const survey = await sut.loadById(
+        faker.string.hexadecimal({ length: 24, prefix: '' })
+      )
+      expect(survey).toBeNull()
+    })
   })
 
   describe('checkById()', () => {
@@ -108,6 +116,26 @@ describe('SurveyMongoRepository', () => {
         faker.string.hexadecimal({ length: 24, prefix: '' })
       )
       expect(exists).toBe(false)
+    })
+  })
+
+  describe('loadAnswers()', () => {
+    test('Should load answers on success', async () => {
+      const addSurveyParams = mockAddSurveyParams()
+      const { insertedId } = await surveyCollection.insertOne(addSurveyParams)
+      const sut = makeSut()
+      const answers = await sut.loadAnswers(insertedId.toString())
+      expect(answers).toEqual(
+        addSurveyParams.answers.map((item) => item.answer)
+      )
+    })
+
+    test('Should return empty array if survey does not exists', async () => {
+      const sut = makeSut()
+      const answers = await sut.loadAnswers(
+        faker.string.hexadecimal({ length: 24, prefix: '' })
+      )
+      expect(answers).toEqual([])
     })
   })
 })

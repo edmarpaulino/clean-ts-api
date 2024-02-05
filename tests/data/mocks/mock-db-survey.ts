@@ -1,10 +1,12 @@
 import type {
   AddSurveyRepository,
   CheckSurveyByIdRepository,
+  LoadAnswersBySurveyRepository,
   LoadSurveyByIdRepository,
   LoadSurveysRepository
 } from '@/data/protocols'
 import { mockSurveyModel, mockSurveyModelArray } from '@/tests/domain/mocks'
+import { faker } from '@faker-js/faker'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
   public params: AddSurveyRepository.Params
@@ -60,6 +62,29 @@ export class CheckSurveyByIdRepositorySpy implements CheckSurveyByIdRepository {
   }
 
   reset = (): void => {
+    this.result = this.defaultResult
+  }
+}
+
+export class LoadAnswersBySurveyRepositorySpy
+  implements LoadAnswersBySurveyRepository
+{
+  private readonly defaultResult: LoadAnswersBySurveyRepository.Result = [
+    faker.word.adjective(),
+    faker.word.adjective()
+  ]
+
+  public id: string
+  public result: LoadAnswersBySurveyRepository.Result = this.defaultResult
+
+  public loadAnswers = async (
+    id: string
+  ): Promise<LoadAnswersBySurveyRepository.Result> => {
+    this.id = id
+    return await Promise.resolve(this.result)
+  }
+
+  public reset = (): void => {
     this.result = this.defaultResult
   }
 }
