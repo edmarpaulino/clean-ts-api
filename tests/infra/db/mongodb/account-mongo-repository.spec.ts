@@ -57,14 +57,14 @@ describe('AccountMongoRepository', () => {
       const addAccountParams = mockAddAccountParams()
       await accountCollection.insertOne(addAccountParams)
       const sut = makeSut()
-      const hasAccount = await sut.checkByEmail(addAccountParams.email)
-      expect(hasAccount).toBe(true)
+      const exists = await sut.checkByEmail(addAccountParams.email)
+      expect(exists).toBe(true)
     })
 
     test('Should return false if account does not exists', async () => {
       const sut = makeSut()
-      const hasAccount = await sut.checkByEmail(faker.internet.email())
-      expect(hasAccount).toBe(false)
+      const exists = await sut.checkByEmail(faker.internet.email())
+      expect(exists).toBe(false)
     })
   })
 

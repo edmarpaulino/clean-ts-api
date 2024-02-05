@@ -1,4 +1,9 @@
-import type { AddSurvey, LoadSurveyById, LoadSurveys } from '@/domain/usecases'
+import type {
+  AddSurvey,
+  CheckSurveyById,
+  LoadSurveyById,
+  LoadSurveys
+} from '@/domain/usecases'
 import { mockSurveyModel, mockSurveyModelArray } from '@/tests/domain/mocks'
 
 export class AddSurveySpy implements AddSurvey {
@@ -23,6 +28,22 @@ export class LoadSurveyByIdSpy implements LoadSurveyById {
   public result: LoadSurveyById.Result = this.defaultResult
 
   async loadById(id: string): Promise<LoadSurveyById.Result> {
+    this.id = id
+    return await Promise.resolve(this.result)
+  }
+
+  reset(): void {
+    this.result = this.defaultResult
+  }
+}
+
+export class CheckSurveyByIdSpy implements CheckSurveyById {
+  private readonly defaultResult: CheckSurveyById.Result = true
+
+  public id: string
+  public result: CheckSurveyById.Result = this.defaultResult
+
+  async checkById(id: string): Promise<CheckSurveyById.Result> {
     this.id = id
     return await Promise.resolve(this.result)
   }

@@ -1,5 +1,6 @@
 import type {
   AddSurveyRepository,
+  CheckSurveyByIdRepository,
   LoadSurveyByIdRepository,
   LoadSurveysRepository
 } from '@/data/protocols'
@@ -9,7 +10,8 @@ export class SurveyMongoRepository
   implements
     AddSurveyRepository,
     LoadSurveysRepository,
-    LoadSurveyByIdRepository
+    LoadSurveyByIdRepository,
+    CheckSurveyByIdRepository
 {
   async add(data: AddSurveyRepository.Params): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
@@ -61,5 +63,14 @@ export class SurveyMongoRepository
       _id: MongoHelper.generateObjectId(id)
     })
     return survey && MongoHelper.map(survey)
+  }
+
+  async checkById(id: string): Promise<CheckSurveyByIdRepository.Result> {
+    const surveyCollection = await MongoHelper.getCollection('surveys')
+    const surveyCount = await surveyCollection.countDocuments(
+      { _id: MongoHelper.generateObjectId(id) },
+      { limit: 1 }
+    )
+    return surveyCount !== 0
   }
 }

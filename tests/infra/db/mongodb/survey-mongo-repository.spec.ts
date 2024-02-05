@@ -1,6 +1,7 @@
 import type { AccountModel } from '@/domain/models'
 import { MongoHelper, SurveyMongoRepository } from '@/infra/db'
 import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain/mocks'
+import { faker } from '@faker-js/faker'
 import type { Collection } from 'mongodb'
 
 describe('SurveyMongoRepository', () => {
@@ -89,6 +90,24 @@ describe('SurveyMongoRepository', () => {
       expect(survey).toBeTruthy()
       expect(survey?.id).toBeTruthy()
       expect(survey?.question).toBe(addSurveyParams.question)
+    })
+  })
+
+  describe('checkById()', () => {
+    test('Should return true if survey exists', async () => {
+      const addSurveyParams = mockAddSurveyParams()
+      const { insertedId } = await surveyCollection.insertOne(addSurveyParams)
+      const sut = makeSut()
+      const exists = await sut.checkById(insertedId.toString())
+      expect(exists).toBe(true)
+    })
+
+    test('Should return false if survey does not exists', async () => {
+      const sut = makeSut()
+      const exists = await sut.checkById(
+        faker.string.hexadecimal({ length: 24, prefix: '' })
+      )
+      expect(exists).toBe(false)
     })
   })
 })

@@ -1,5 +1,6 @@
 import type {
   AddSurveyRepository,
+  CheckSurveyByIdRepository,
   LoadSurveyByIdRepository,
   LoadSurveysRepository
 } from '@/data/protocols'
@@ -36,6 +37,22 @@ export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   }
 
   reset(): void {
+    this.result = this.defaultResult
+  }
+}
+
+export class CheckSurveyByIdRepositorySpy implements CheckSurveyByIdRepository {
+  private readonly defaultResult: CheckSurveyByIdRepository.Result = true
+
+  public id: string
+  public result: CheckSurveyByIdRepository.Result = this.defaultResult
+
+  checkById = async (id: string): Promise<CheckSurveyByIdRepository.Result> => {
+    this.id = id
+    return await Promise.resolve(this.result)
+  }
+
+  reset = (): void => {
     this.result = this.defaultResult
   }
 }
