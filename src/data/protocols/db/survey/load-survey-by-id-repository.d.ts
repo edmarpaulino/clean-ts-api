@@ -1,7 +1,7 @@
 import type { SurveyModel } from '@/domain/models'
 
 export namespace LoadSurveyByIdRepository {
-  export type Result = SurveyModel
+  export type Result = SurveyModel | null
 }
 
 export interface LoadSurveyByIdRepository {

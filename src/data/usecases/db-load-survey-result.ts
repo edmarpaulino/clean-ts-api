@@ -20,16 +20,18 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
     )
     if (!surveyResult) {
       const survey = await this.loadSurveyByIdRepository.loadById(surveyId)
-      surveyResult = {
-        surveyId: survey.id,
-        question: survey.question,
-        answers: survey.answers.map((answer) => ({
-          ...answer,
-          count: 0,
-          percent: 0,
-          isCurrentAccountAnswer: false
-        })),
-        date: survey.date
+      if (survey) {
+        surveyResult = {
+          surveyId: survey.id,
+          question: survey.question,
+          answers: survey.answers.map((answer) => ({
+            ...answer,
+            count: 0,
+            percent: 0,
+            isCurrentAccountAnswer: false
+          })),
+          date: survey.date
+        }
       }
     }
     return surveyResult as any

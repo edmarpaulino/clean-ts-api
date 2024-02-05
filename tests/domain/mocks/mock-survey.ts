@@ -1,16 +1,21 @@
-import type { SurveyModel } from '@/domain/models'
+import type { SurveyAnswerModel, SurveyModel } from '@/domain/models'
 import type { AddSurvey } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
+
+export const mockSurveyAnswerModel = (): SurveyAnswerModel => ({
+  image: faker.image.url(),
+  answer: faker.word.sample()
+})
+
+export const mockSurveyAnswerModelArray = (): SurveyAnswerModel[] => [
+  mockSurveyAnswerModel(),
+  mockSurveyAnswerModel()
+]
 
 export const mockSurveyModel = (): SurveyModel => ({
   id: faker.string.uuid(),
   question: faker.word.words(),
-  answers: [
-    {
-      image: faker.image.url(),
-      answer: faker.word.sample()
-    }
-  ],
+  answers: mockSurveyAnswerModelArray(),
   date: faker.date.recent(),
   didAnswer: true
 })
