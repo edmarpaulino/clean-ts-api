@@ -87,7 +87,7 @@ export class SurveyMongoRepository
         answers: '$answers.answer'
       })
       .build()
-    const survey = await surveyCollection.aggregate(query).toArray()
-    return survey?.[0]?.answers || []
+    const [survey] = await surveyCollection.aggregate(query).toArray()
+    return survey?.answers ?? []
   }
 }
