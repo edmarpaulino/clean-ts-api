@@ -60,6 +60,7 @@
     "bcrypt": "^5.1.1",
     "express": "^4.18.2",
     "graphql": "^16.8.1",
+    "graphql-scalars": "^1.22.4",
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "mongodb": "^6.3.0",
