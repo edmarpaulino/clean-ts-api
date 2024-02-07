@@ -140,7 +140,7 @@ export class SurveyResultMongoRepository
         _id: {
           surveyId: '$surveyId',
           question: '$question',
-          date: '$date,'
+          date: '$date'
         },
         answers: {
           $push: '$answers'
