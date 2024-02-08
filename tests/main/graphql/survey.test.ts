@@ -1,5 +1,6 @@
 import { MongoHelper } from '@/infra/db'
 import env from '@/main/config/env'
+import { AccessDeniedError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import { gql, type ApolloServer } from 'apollo-server-express'
 import type { DocumentNode } from 'graphql'
@@ -7,10 +8,22 @@ import { sign } from 'jsonwebtoken'
 import type { Collection } from 'mongodb'
 import { makeApolloServer } from './helpers'
 
+type Answer = {
+  image?: string
+  answer: string
+}
+
+type Survey = {
+  question: string
+  answers: Answer[]
+  date: Date | string
+}
+
 describe('Survey GraphQL', () => {
   let accountCollection: Collection
   let surveyCollection: Collection
   let apolloServer: ApolloServer
+  let survey: Survey
 
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL ?? '')
@@ -26,6 +39,16 @@ describe('Survey GraphQL', () => {
       req: {
         headers: {}
       }
+    }
+    survey = {
+      question: faker.word.words(),
+      answers: [
+        {
+          image: faker.image.url(),
+          answer: faker.word.adjective()
+        }
+      ],
+      date: faker.date.recent().toISOString()
     }
   })
 
@@ -75,19 +98,6 @@ describe('Survey GraphQL', () => {
           }
         }
       }
-      const survey = {
-        question: faker.word.words(),
-        answers: [
-          {
-            image: faker.image.url(),
-            answer: faker.word.adjective()
-          },
-          {
-            answer: faker.word.adjective()
-          }
-        ],
-        date: faker.date.recent().toISOString()
-      }
       await surveyCollection.insertOne(survey)
       const response = await apolloServer.executeOperation({
         query: surveysQuery
@@ -95,10 +105,17 @@ describe('Survey GraphQL', () => {
       expect(response?.data?.surveys?.length).toBe(1)
       expect(response?.data?.surveys?.[0].id).toBeTruthy()
       expect(response?.data?.surveys?.[0].question).toBe(survey.question)
-      expect(response?.data?.surveys?.[0].answers).toEqual(
-        survey.answers.map((item) => ({ ...item, image: item.image ?? null }))
-      )
+      expect(response?.data?.surveys?.[0].answers).toEqual(survey.answers)
       expect(response?.data?.surveys?.[0].didAnswer).toBe(false)
+    })
+
+    test('Should return AccessDeniedError if accessToken is not provided ', async () => {
+      await surveyCollection.insertOne(survey)
+      const response = await apolloServer.executeOperation({
+        query: surveysQuery
+      })
+      expect(response?.data).toBeFalsy()
+      expect(response?.errors).toEqual([new AccessDeniedError()])
     })
   })
 })
