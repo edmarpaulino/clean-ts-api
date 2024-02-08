@@ -129,4 +129,49 @@ describe('SurveyResult GraphQL', () => {
       expect(response?.errors).toEqual([new AccessDeniedError()])
     })
   })
+
+  describe('SaveSurveyResult Mutation', () => {
+    const saveSurveyResultMutation = gql`
+      mutation saveSurveyResult($surveyId: String!, $answer: String!) {
+        saveSurveyResult(surveyId: $surveyId, answer: $answer) {
+          question
+          answers {
+            answer
+            count
+            percent
+            isCurrentAccountAnswer
+          }
+          date
+        }
+      }
+    `
+    test('Should return survey result', async () => {
+      const accessToken = await makeAccessToken()
+      apolloServer.requestOptions.context = {
+        req: {
+          headers: {
+            'x-access-token': accessToken
+          }
+        }
+      }
+      const { insertedId } = await surveyCollection.insertOne(survey)
+      const response = await apolloServer.executeOperation({
+        query: saveSurveyResultMutation,
+        variables: {
+          surveyId: insertedId.toString(),
+          answer: survey.answers[0].answer
+        }
+      })
+      expect(response?.data).toBeTruthy()
+      expect(response?.data?.saveSurveyResult?.question).toBe(survey.question)
+      expect(response?.data?.saveSurveyResult?.answers).toEqual([
+        {
+          answer: survey.answers[0].answer,
+          count: 1,
+          percent: 100,
+          isCurrentAccountAnswer: true
+        }
+      ])
+    })
+  })
 })
