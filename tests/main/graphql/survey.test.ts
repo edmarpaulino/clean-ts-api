@@ -118,4 +118,58 @@ describe('Survey GraphQL', () => {
       expect(response?.errors).toEqual([new AccessDeniedError()])
     })
   })
+
+  describe('AddSurvey Mutation', () => {
+    const addSurveyMutation: DocumentNode = gql`
+      mutation addSurvey($question: String!, $answers: [AnswerInput!]!) {
+        addSurvey(question: $question, answers: $answers)
+      }
+    `
+
+    test('Should add survey', async () => {
+      const accessToken = await makeAccessToken()
+      apolloServer.requestOptions.context = {
+        req: {
+          headers: {
+            'x-access-token': accessToken
+          }
+        }
+      }
+      const question: string = faker.word.words()
+      const answers = [
+        {
+          answer: faker.word.adjective()
+        },
+        { answer: faker.word.adjective() }
+      ]
+      const response = await apolloServer.executeOperation({
+        query: addSurveyMutation,
+        variables: {
+          question,
+          answers
+        }
+      })
+      expect(response?.data?.addSurvey).toBeNull()
+      expect(response?.errors).toBeFalsy()
+    })
+
+    test('Should return AccessDeniedError if accessToken is not provided ', async () => {
+      const question: string = faker.word.words()
+      const answers = [
+        {
+          answer: faker.word.adjective()
+        },
+        { answer: faker.word.adjective() }
+      ]
+      const response = await apolloServer.executeOperation({
+        query: addSurveyMutation,
+        variables: {
+          question,
+          answers
+        }
+      })
+      expect(response?.data?.addSurvey).toBeNull()
+      expect(response?.errors).toEqual([new AccessDeniedError()])
+    })
+  })
 })
