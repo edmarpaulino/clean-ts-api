@@ -173,5 +173,18 @@ describe('SurveyResult GraphQL', () => {
         }
       ])
     })
+
+    test('Should return AccessDeniedError if accessToken is not provided ', async () => {
+      const { insertedId } = await surveyCollection.insertOne(survey)
+      const response = await apolloServer.executeOperation({
+        query: saveSurveyResultMutation,
+        variables: {
+          surveyId: insertedId.toString(),
+          answer: survey.answers[0].answer
+        }
+      })
+      expect(response?.data).toBeFalsy()
+      expect(response?.errors).toEqual([new AccessDeniedError()])
+    })
   })
 })
