@@ -216,11 +216,11 @@ export class SurveyResultMongoRepository
         answers: '$answers'
       })
       .build()
-    const aggCursor = surveyResultCollection.aggregate(query)
+    const aggCursor = surveyResultCollection.aggregate<SurveyResultModel>(query)
     const [surveyResult] = await aggCursor.toArray()
     if (!surveyResult) {
       return null
     }
-    return surveyResult as SurveyResultModel
+    return surveyResult
   }
 }
