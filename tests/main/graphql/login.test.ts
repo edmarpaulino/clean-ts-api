@@ -1,5 +1,5 @@
 import { MongoHelper } from '@/infra/db'
-import { UnauthorizedError } from '@/presentation/errors'
+import { EmailInUseError, UnauthorizedError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import { gql, type ApolloServer } from 'apollo-server-express'
 import { hash } from 'bcrypt'
@@ -13,6 +13,8 @@ describe('Login GraphQL', () => {
   let name: string
   let email: string
   let password: string
+
+  const BCRYPT_SALT: number = 12
 
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL ?? '')
@@ -42,8 +44,7 @@ describe('Login GraphQL', () => {
     `
 
     test('Should return an Account on valid credentials', async () => {
-      const salt: number = 12
-      const hashedPassword: string = await hash(password, salt)
+      const hashedPassword: string = await hash(password, BCRYPT_SALT)
       await accountCollection.insertOne({
         name,
         email,
@@ -97,6 +98,22 @@ describe('Login GraphQL', () => {
       expect(response).toBeTruthy()
       expect(response?.data?.signUp?.name).toBe(name)
       expect(response?.data?.signUp?.accessToken).toBeTruthy()
+    })
+
+    test('Should return an EmailInUseError on invalid data', async () => {
+      const hashedPassword: string = await hash(password, BCRYPT_SALT)
+      await accountCollection.insertOne({
+        name,
+        email,
+        password: hashedPassword
+      })
+      const response = await apolloServer.executeOperation({
+        query: signUpMutation,
+        variables: { name, email, password, passwordConfirmation: password }
+      })
+      expect(response).toBeTruthy()
+      expect(response?.data).toBeFalsy()
+      expect(response?.errors?.[0]).toEqual(new EmailInUseError())
     })
   })
 })
