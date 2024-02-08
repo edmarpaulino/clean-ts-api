@@ -1,5 +1,6 @@
 import { MongoHelper } from '@/infra/db'
 import env from '@/main/config/env'
+import { AccessDeniedError } from '@/presentation/errors'
 import { faker } from '@faker-js/faker'
 import { gql, type ApolloServer } from 'apollo-server-express'
 import type { DocumentNode } from 'graphql'
@@ -116,6 +117,16 @@ describe('SurveyResult GraphQL', () => {
         }))
       )
       expect(response?.data?.surveyResult?.date).toEqual(new Date(survey.date))
+    })
+
+    test('Should return AccessDeniedError if accessToken is not provided ', async () => {
+      const { insertedId } = await surveyCollection.insertOne(survey)
+      const response = await apolloServer.executeOperation({
+        query: surveyResultQuery,
+        variables: { surveyId: insertedId.toString() }
+      })
+      expect(response?.data).toBeFalsy()
+      expect(response?.errors).toEqual([new AccessDeniedError()])
     })
   })
 })
