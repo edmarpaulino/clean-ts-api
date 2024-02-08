@@ -10,6 +10,9 @@ import { makeApolloServer } from './helpers'
 describe('Login GraphQL', () => {
   let accountCollection: Collection
   let apolloServer: ApolloServer
+  let name: string
+  let email: string
+  let password: string
 
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL ?? '')
@@ -19,6 +22,9 @@ describe('Login GraphQL', () => {
   beforeEach(async () => {
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany()
+    name = faker.person.fullName()
+    email = faker.internet.email()
+    password = faker.internet.password()
   })
 
   afterAll(async () => {
@@ -36,9 +42,6 @@ describe('Login GraphQL', () => {
     `
 
     test('Should return an Account on valid credentials', async () => {
-      const name: string = faker.person.fullName()
-      const email: string = faker.internet.email()
-      const password: string = faker.internet.password()
       const salt: number = 12
       const hashedPassword: string = await hash(password, salt)
       await accountCollection.insertOne({
@@ -56,8 +59,6 @@ describe('Login GraphQL', () => {
     })
 
     test('Should return UnauthorizedError on invalid credentials', async () => {
-      const email: string = faker.internet.email()
-      const password: string = faker.internet.password()
       const response = await apolloServer.executeOperation({
         query: loginQuery,
         variables: { email, password }
@@ -65,6 +66,37 @@ describe('Login GraphQL', () => {
       expect(response).toBeTruthy()
       expect(response?.data).toBeFalsy()
       expect(response?.errors?.[0]).toEqual(new UnauthorizedError())
+    })
+  })
+
+  describe('SignUp Mutation', () => {
+    const signUpMutation: DocumentNode = gql`
+      mutation signUpMutation(
+        $name: String!
+        $email: String!
+        $password: String!
+        $passwordConfirmation: String!
+      ) {
+        signUp(
+          name: $name
+          email: $email
+          password: $password
+          passwordConfirmation: $passwordConfirmation
+        ) {
+          accessToken
+          name
+        }
+      }
+    `
+
+    test('Should return an Account on valid data', async () => {
+      const response = await apolloServer.executeOperation({
+        query: signUpMutation,
+        variables: { name, email, password, passwordConfirmation: password }
+      })
+      expect(response).toBeTruthy()
+      expect(response?.data?.signUp?.name).toBe(name)
+      expect(response?.data?.signUp?.accessToken).toBeTruthy()
     })
   })
 })
